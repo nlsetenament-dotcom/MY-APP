@@ -12,7 +12,7 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
 
-      - name: Configurar Java (JDK 17)
+      - name: Configurar Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
@@ -21,11 +21,11 @@ jobs:
       - name: Configurar Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Dar permisos a gradlew
-        run: chmod +x ./gradlew
-
-      - name: Construir APK (Debug)
-        run: ./gradlew assembleDebug --stacktrace
+      - name: Build APK
+        run: |
+          cd app
+          chmod +x ../gradlew || true
+          ../gradlew assembleDebug || gradle assembleDebug
 
       - name: Subir APK
         uses: actions/upload-artifact@v4
