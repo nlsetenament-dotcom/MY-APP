@@ -18,14 +18,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Configurar Gradle
+      - name: Usar Gradle 7.6 (forzado)
         uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: 7.6
 
       - name: Build APK
-        run: |
-          cd app
-          chmod +x ../gradlew || true
-          ../gradlew assembleDebug || gradle assembleDebug
+        run: gradle assembleDebug
 
       - name: Subir APK
         uses: actions/upload-artifact@v4
