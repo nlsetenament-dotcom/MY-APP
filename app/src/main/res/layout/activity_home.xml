@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/colorBackground">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp">
+
+        <!-- Avatar -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/ic_avatar_default"
+            app:civ_border_width="3dp"
+            app:civ_border_color="?attr/colorPrimary"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Punto online -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+            <View
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/circle_online"
+                android:layout_marginEnd="6dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="En línea"
+                android:textSize="13sp"
+                android:textColor="@color/online_green"/>
+        </LinearLayout>
+
+        <!-- Nombre -->
+        <TextView
+            android:id="@+id/tvCompanionName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Luna"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnBackground"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Personalidad -->
+        <TextView
+            android:id="@+id/tvPersonality"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✨ Cariñosa · Casual"
+            android:textSize="14sp"
+            android:textColor="?attr/colorPrimary"
+            android:layout_marginBottom="6dp"/>
+
+        <!-- Intereses -->
+        <TextView
+            android:id="@+id/tvInterests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sin intereses especificados"
+            android:textSize="13sp"
+            android:textColor="?attr/colorOnBackground"
+            android:alpha="0.6"
+            android:gravity="center"
+            android:layout_marginBottom="48dp"/>
+
+        <!-- Botón Chat -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStartChat"
+            android:layout_width="220dp"
+            android:layout_height="56dp"
+            android:text="💬  Iniciar chat"
+            android:textSize="16sp"
+            app:cornerRadius="28dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Botón Configuración -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSettings"
+            android:layout_width="220dp"
+            android:layout_height="48dp"
+            android:text="⚙️  Configuración"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Recrear compañero -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnResetOnboarding"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crear nuevo compañero/a"
+            style="@style/Widget.MaterialComponents.Button.TextButton"/>
+
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

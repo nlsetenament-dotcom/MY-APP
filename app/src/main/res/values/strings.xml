@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">NLS</string>
+    <string name="companion_name">Luna</string>
+    <string name="online">En línea</string>
+    <string name="typing">escribiendo…</string>
+    <string name="message_hint">Escribe un mensaje…</string>
+    <string name="send">Enviar</string>
+    <string name="clear_chat">Borrar chat</string>
+</resources>
