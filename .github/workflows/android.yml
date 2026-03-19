@@ -9,17 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout código
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Configurar Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
+          distribution: temurin
+          java-version: 17
 
-      - name: Dar permiso a gradle
-        run: chmod +x ./gradle
+      - name: Permisos
+        run: chmod +x gradlew
 
       - name: Build APK
         run: ./gradlew assembleDebug
