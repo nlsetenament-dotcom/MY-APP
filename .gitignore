@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 *.iml
 .gradle
 /local.properties
@@ -8,3 +9,13 @@
 .externalNativeBuild
 .cxx
 local.properties
+=======
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+
+# Ignore Kotlin plugin data
+.kotlin
+>>>>>>> 5cd717b (Primer commit)
