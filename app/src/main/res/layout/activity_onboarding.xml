@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/surface">
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,14 +12,13 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <!-- Header -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="NLS"
+            android:text="NLS CHAT"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="@color/colorPrimary"
+            android:textColor="#6200EE"
             android:layout_marginBottom="4dp"/>
 
         <TextView
@@ -27,18 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Paso 1 de 5"
-            android:textSize="13sp"
-            android:textColor="@color/on_surface"
-            android:alpha="0.6"
-            android:layout_marginBottom="12dp"/>
+            android:textSize="13sp"/>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:progress="20"
-            app:trackCornerRadius="4dp"
-            android:layout_marginBottom="28dp"/>
+            android:layout_marginBottom="20dp"/>
 
         <ScrollView
             android:layout_width="match_parent"
@@ -51,77 +45,101 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!-- PASO 0 -->
+                <!-- PASO 0: Nombre y Género -->
                 <LinearLayout
                     android:id="@+id/step0Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:text="¿Cómo se llamará tu compañero/a?"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/on_surface"/>
-
-                    <TextView
-                        android:text="Elige el nombre y género de tu IA personal."
-                        android:textSize="14sp"
-                        android:textColor="@color/on_surface"
-                        android:alpha="0.7"/>
+                    android:orientation="vertical">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Nombre del compañero/a">
-
+                        android:hint="Nombre de la IA">
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/etCompanionName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <RadioGroup
+                        android:id="@+id/rgGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp">
+                        <RadioButton android:id="@+id/rbMale" android:text="Masculino" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <RadioButton android:id="@+id/rbFemale" android:text="Femenino" android:layout_width="wrap_content" android:layout_height="wrap_content" android:checked="true"/>
+                        <RadioButton android:id="@+id/rbNonBinary" android:text="No binario" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </RadioGroup>
                 </LinearLayout>
 
-                <!-- PASO 1 -->
+                <!-- PASO 1: Personalidad y Lenguaje -->
                 <LinearLayout
                     android:id="@+id/step1Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone">
-
-                    <TextView
-                        android:text="¿Cómo es su personalidad?"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/on_surface"/>
+                    <RadioGroup android:id="@+id/rgPersonality" android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <RadioButton android:id="@+id/rbFunny" android:text="Divertida" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <RadioButton android:id="@+id/rbSerious" android:text="Seria" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <RadioButton android:id="@+id/rbFlirty" android:text="Coqueta" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <RadioButton android:id="@+id/rbAdventurous" android:text="Aventurera" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </RadioGroup>
+                    <RadioGroup android:id="@+id/rgSpeech" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp">
+                        <RadioButton android:id="@+id/rbFormal" android:text="Formal" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <RadioButton android:id="@+id/rbYouth" android:text="Juvenil" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </RadioGroup>
                 </LinearLayout>
 
-                <!-- PASO 2 -->
+                <!-- PASO 2: Emocional -->
                 <LinearLayout
                     android:id="@+id/step2Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone"/>
+                    android:visibility="gone">
+                    <RadioGroup android:id="@+id/rgEmotional" android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <RadioButton android:id="@+id/rbLow" android:text="Bajo" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <RadioButton android:id="@+id/rbHigh" android:text="Alto" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </RadioGroup>
+                </LinearLayout>
 
-                <!-- PASO 3 -->
+                <!-- PASO 3: Intereses -->
                 <LinearLayout
                     android:id="@+id/step3Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone"/>
+                    android:visibility="gone">
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroupInterests"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <com.google.android.material.chip.Chip android:text="Música" android:checkable="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <com.google.android.material.chip.Chip android:text="Cine" android:checkable="true" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </com.google.android.material.chip.ChipGroup>
+                </LinearLayout>
 
-                <!-- PASO 4 -->
+                <!-- PASO 4: Avatar -->
                 <LinearLayout
                     android:id="@+id/step4Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone"/>
+                    android:gravity="center"
+                    android:visibility="gone">
+                    <ImageView
+                        android:id="@+id/ivAvatarPreview"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:src="@android:drawable/ic_menu_gallery"/>
+                    <Button
+                        android:id="@+id/btnPickAvatar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Elegir Foto"/>
+                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
@@ -131,19 +149,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="end">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnBack"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Atrás"
-                android:visibility="gone"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnNext"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Siguiente"/>
+            <Button android:id="@+id/btnBack" android:text="Atrás" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone"/>
+            <Button android:id="@+id/btnNext" android:text="Siguiente" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="10dp"/>
         </LinearLayout>
 
     </LinearLayout>
