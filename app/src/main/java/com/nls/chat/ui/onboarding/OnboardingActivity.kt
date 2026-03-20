@@ -37,20 +37,15 @@ class OnboardingActivity : AppCompatActivity() {
     private var selectedInterests = mutableListOf<String>()
     private var avatarUri: Uri? = null
 
-    private val pickImageLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
             avatarUri = it
             Glide.with(this).load(it).circleCrop().into(binding.ivAvatarPreview)
         }
     }
 
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
+    private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) pickImageLauncher.launch("image/*")
-        else Toast.makeText(this, "Permiso necesario", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,9 +77,8 @@ class OnboardingActivity : AppCompatActivity() {
         binding.tvStepIndicator.text = "Paso ${step + 1} de $totalSteps"
 
         val layouts = listOf(binding.step0Layout, binding.step1Layout, binding.step2Layout, binding.step3Layout, binding.step4Layout)
-        layouts.forEach { it.visibility = View.GONE }
+        layouts.forEachIndexed { index, view -> view.visibility = if (index == step) View.VISIBLE else View.GONE }
         
-        layouts[step].visibility = View.VISIBLE
         binding.btnBack.visibility = if (step == 0) View.GONE else View.VISIBLE
         binding.btnNext.text = if (step == 4) "¡Crear!" else "Siguiente"
     }
@@ -94,10 +88,11 @@ class OnboardingActivity : AppCompatActivity() {
             0 -> {
                 companionName = binding.etCompanionName.text.toString().trim()
                 if (companionName.isBlank()) {
-                    binding.etCompanionName.error = "Ingresa un nombre"
+                    binding.etCompanionName.error = "Nombre requerido"
                     return
                 }
-                selectedGender = when (binding.rgGender.checkedRadioButtonId) {
+                val checked = binding.rgGender.checkedRadioButtonId
+                selectedGender = when (checked) {
                     R.id.rbMale -> Gender.MALE
                     R.id.rbNonBinary -> Gender.NON_BINARY
                     else -> Gender.FEMALE
@@ -105,14 +100,16 @@ class OnboardingActivity : AppCompatActivity() {
                 showStep(1)
             }
             1 -> {
-                selectedPersonality = when (binding.rgPersonality.checkedRadioButtonId) {
+                val pId = binding.rgPersonality.checkedRadioButtonId
+                selectedPersonality = when (pId) {
                     R.id.rbFunny -> Personality.FUNNY
                     R.id.rbSerious -> Personality.SERIOUS
                     R.id.rbFlirty -> Personality.FLIRTY
                     R.id.rbAdventurous -> Personality.ADVENTUROUS
                     else -> Personality.SWEET
                 }
-                selectedSpeechStyle = when (binding.rgSpeech.checkedRadioButtonId) {
+                val sId = binding.rgSpeech.checkedRadioButtonId
+                selectedSpeechStyle = when (sId) {
                     R.id.rbFormal -> SpeechStyle.FORMAL
                     R.id.rbYouth -> SpeechStyle.YOUTH
                     else -> SpeechStyle.CASUAL
@@ -120,7 +117,8 @@ class OnboardingActivity : AppCompatActivity() {
                 showStep(2)
             }
             2 -> {
-                selectedEmotionalLevel = when (binding.rgEmotional.checkedRadioButtonId) {
+                val eId = binding.rgEmotional.checkedRadioButtonId
+                selectedEmotionalLevel = when (eId) {
                     R.id.rbLow -> EmotionalLevel.LOW
                     R.id.rbHigh -> EmotionalLevel.HIGH
                     else -> EmotionalLevel.MEDIUM
@@ -142,29 +140,14 @@ class OnboardingActivity : AppCompatActivity() {
     private fun handleBack() { if (currentStep > 0) showStep(currentStep - 1) }
 
     private fun pickAvatar() {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            Manifest.permission.READ_MEDIA_IMAGES
-        else
-            Manifest.permission.READ_EXTERNAL_STORAGE
-
-        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-            pickImageLauncher.launch("image/*")
-        } else {
-            requestPermissionLauncher.launch(permission)
-        }
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES else Manifest.permission.READ_EXTERNAL_STORAGE
+        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) pickImageLauncher.launch("image/*")
+        else requestPermissionLauncher.launch(permission)
     }
 
     private fun finishOnboarding() {
-        val savedAvatarPath = avatarUri?.let { copyAvatarToInternal(it) }
-        val config = CompanionConfig(
-            name = companionName,
-            gender = selectedGender,
-            personality = selectedPersonality,
-            speechStyle = selectedSpeechStyle,
-            emotionalLevel = selectedEmotionalLevel,
-            interests = selectedInterests.toList(),
-            avatarPath = savedAvatarPath
-        )
+        val path = avatarUri?.let { copyAvatarToInternal(it) }
+        val config = CompanionConfig(companionName, selectedGender, selectedPersonality, selectedSpeechStyle, selectedEmotionalLevel, selectedInterests.toList(), path)
         prefs.companionConfig = config
         prefs.isOnboardingComplete = true
         goToHome()
@@ -172,11 +155,8 @@ class OnboardingActivity : AppCompatActivity() {
 
     private fun copyAvatarToInternal(uri: Uri): String? {
         return try {
-            val dir = File(filesDir, "avatars").apply { mkdirs() }
-            val file = File(dir, "avatar.jpg")
-            contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(file).use { output -> input.copyTo(output) }
-            }
+            val file = File(File(filesDir, "avatars").apply { mkdirs() }, "avatar.jpg")
+            contentResolver.openInputStream(uri)?.use { input -> FileOutputStream(file).use { input.copyTo(it) } }
             file.absolutePath
         } catch (e: Exception) { null }
     }
