@@ -6,25 +6,21 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.chip.Chip
+import com.nls.chat.R
 import com.nls.chat.data.local.PreferencesManager
 import com.nls.chat.databinding.ActivityOnboardingBinding
 import com.nls.chat.model.*
 import com.nls.chat.ui.home.HomeActivity
-import com.nls.chat.utils.Constants
 import java.io.File
 import java.io.FileOutputStream
 
-/**
- * OnboardingActivity
- * Wizard de 5 pasos para configurar el compañero/a virtual.
- * Al completarlo, guarda CompanionConfig y abre HomeActivity.
- */
 class OnboardingActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOnboardingBinding
@@ -33,7 +29,6 @@ class OnboardingActivity : AppCompatActivity() {
     private var currentStep = 0
     private val totalSteps = 5
 
-    // Valores del formulario
     private var companionName = ""
     private var selectedGender = Gender.FEMALE
     private var selectedPersonality = Personality.SWEET
@@ -42,7 +37,6 @@ class OnboardingActivity : AppCompatActivity() {
     private var selectedInterests = mutableListOf<String>()
     private var avatarUri: Uri? = null
 
-    // Launcher para elegir imagen de galería
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
@@ -56,7 +50,7 @@ class OnboardingActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) pickImageLauncher.launch("image/*")
-        else Toast.makeText(this, "Permiso necesario para elegir foto", Toast.LENGTH_SHORT).show()
+        else Toast.makeText(this, "Permiso necesario", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +59,6 @@ class OnboardingActivity : AppCompatActivity() {
         setContentView(binding.root)
         prefs = PreferencesManager(this)
 
-        // Si ya terminó el onboarding, ir directo al Home
         if (prefs.isOnboardingComplete) {
             goToHome()
             return
@@ -88,21 +81,12 @@ class OnboardingActivity : AppCompatActivity() {
         binding.progressBar.progress = progress
         binding.tvStepIndicator.text = "Paso ${step + 1} de $totalSteps"
 
-        // Ocultar todos los pasos
-        binding.step0Layout.hide()
-        binding.step1Layout.hide()
-        binding.step2Layout.hide()
-        binding.step3Layout.hide()
-        binding.step4Layout.hide()
-
-        // Mostrar paso actual
-        when (step) {
-            0 -> { binding.step0Layout.show(); binding.btnBack.hide() }
-            1 -> { binding.step1Layout.show(); binding.btnBack.show() }
-            2 -> { binding.step2Layout.show() }
-            3 -> { binding.step3Layout.show() }
-            4 -> { binding.step4Layout.show(); binding.btnNext.text = "¡Crear compañero/a!" }
-        }
+        val layouts = listOf(binding.step0Layout, binding.step1Layout, binding.step2Layout, binding.step3Layout, binding.step4Layout)
+        layouts.forEach { it.visibility = View.GONE }
+        
+        layouts[step].visibility = View.VISIBLE
+        binding.btnBack.visibility = if (step == 0) View.GONE else View.VISIBLE
+        binding.btnNext.text = if (step == 4) "¡Crear!" else "Siguiente"
     }
 
     private fun handleNext() {
@@ -114,37 +98,36 @@ class OnboardingActivity : AppCompatActivity() {
                     return
                 }
                 selectedGender = when (binding.rgGender.checkedRadioButtonId) {
-                    binding.rbMale.id   -> Gender.MALE
-                    binding.rbNonBinary.id -> Gender.NON_BINARY
-                    else               -> Gender.FEMALE
+                    R.id.rbMale -> Gender.MALE
+                    R.id.rbNonBinary -> Gender.NON_BINARY
+                    else -> Gender.FEMALE
                 }
                 showStep(1)
             }
             1 -> {
                 selectedPersonality = when (binding.rgPersonality.checkedRadioButtonId) {
-                    binding.rbFunny.id       -> Personality.FUNNY
-                    binding.rbSerious.id     -> Personality.SERIOUS
-                    binding.rbFlirty.id      -> Personality.FLIRTY
-                    binding.rbAdventurous.id -> Personality.ADVENTUROUS
-                    else                     -> Personality.SWEET
+                    R.id.rbFunny -> Personality.FUNNY
+                    R.id.rbSerious -> Personality.SERIOUS
+                    R.id.rbFlirty -> Personality.FLIRTY
+                    R.id.rbAdventurous -> Personality.ADVENTUROUS
+                    else -> Personality.SWEET
                 }
                 selectedSpeechStyle = when (binding.rgSpeech.checkedRadioButtonId) {
-                    binding.rbFormal.id -> SpeechStyle.FORMAL
-                    binding.rbYouth.id  -> SpeechStyle.YOUTH
-                    else               -> SpeechStyle.CASUAL
+                    R.id.rbFormal -> SpeechStyle.FORMAL
+                    R.id.rbYouth -> SpeechStyle.YOUTH
+                    else -> SpeechStyle.CASUAL
                 }
                 showStep(2)
             }
             2 -> {
                 selectedEmotionalLevel = when (binding.rgEmotional.checkedRadioButtonId) {
-                    binding.rbLow.id  -> EmotionalLevel.LOW
-                    binding.rbHigh.id -> EmotionalLevel.HIGH
-                    else             -> EmotionalLevel.MEDIUM
+                    R.id.rbLow -> EmotionalLevel.LOW
+                    R.id.rbHigh -> EmotionalLevel.HIGH
+                    else -> EmotionalLevel.MEDIUM
                 }
                 showStep(3)
             }
             3 -> {
-                // Recoger intereses seleccionados
                 selectedInterests.clear()
                 for (i in 0 until binding.chipGroupInterests.childCount) {
                     val chip = binding.chipGroupInterests.getChildAt(i) as? Chip
@@ -156,9 +139,7 @@ class OnboardingActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleBack() {
-        if (currentStep > 0) showStep(currentStep - 1)
-    }
+    private fun handleBack() { if (currentStep > 0) showStep(currentStep - 1) }
 
     private fun pickAvatar() {
         val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -174,22 +155,18 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private fun finishOnboarding() {
-        // Copiar avatar a directorio interno
         val savedAvatarPath = avatarUri?.let { copyAvatarToInternal(it) }
-
         val config = CompanionConfig(
-            name          = companionName,
-            gender        = selectedGender,
-            personality   = selectedPersonality,
-            speechStyle   = selectedSpeechStyle,
+            name = companionName,
+            gender = selectedGender,
+            personality = selectedPersonality,
+            speechStyle = selectedSpeechStyle,
             emotionalLevel = selectedEmotionalLevel,
-            interests     = selectedInterests.toList(),
-            avatarPath    = savedAvatarPath
+            interests = selectedInterests.toList(),
+            avatarPath = savedAvatarPath
         )
-
         prefs.companionConfig = config
         prefs.isOnboardingComplete = true
-
         goToHome()
     }
 
@@ -208,8 +185,4 @@ class OnboardingActivity : AppCompatActivity() {
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }
-
-    // ─── Extension helpers ────────────────────────────────────────────────────
-    private fun android.view.View.show() { visibility = android.view.View.VISIBLE }
-    private fun android.view.View.hide() { visibility = android.view.View.GONE }
 }
